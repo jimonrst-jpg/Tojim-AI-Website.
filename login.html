@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسجيل الدخول - Jonior_1230</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+  <style>
+    :root {
+      --primary-color: #6366f1; /* Indigo */
+      --secondary-color: #a855f7; /* Purple */
+      --bg-color: #0f172a; /* Slate 900 */
+      --border-color: rgba(255,255,255,0.12);
+      --text-color: #ffffff;
+      --muted-text: #94a3b8; /* Slate 400 */
+    }
+
+    /* إعادة تعريف الانتقالات لتقليل تكلفة الأداء وتحسين التفاعل */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    a, button, .lang-btn, .login-btn, .input-group input {
+      transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg-color);
+      /* تأثير خلفية النيون المتدرج */
+      background-image:
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      overflow: hidden;
+      color: var(--text-color);
+    }
+
+    /* خلفية شفافة متحركة (للتجميل) */
+    .background-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .shape {
+      position: absolute;
+      filter: blur(80px);
+      opacity: 0.55;
+      border-radius: 50%;
+      animation: float 10s infinite ease-in-out;
+    }
+    .shape-1 { width: 300px; height: 300px; background: var(--primary-color); top: -10%; left: -10%; }
+    .shape-2 { width: 400px; height: 400px; background: var(--secondary-color); bottom: -10%; right: -10%; animation-delay: 2s; }
+
+    @keyframes float {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(20px,40px); }
+    }
+
+    /* الحاوية الرئيسية (بطاقة تسجيل الدخول) */
+    .container {
+      width: 900px;
+      max-width: 95%;
+      height: 600px;
+      display: flex;
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(30,41,59,0.7); /* لون أساسي شفاف */
+      backdrop-filter: blur(20px); /* تأثير الزجاج الضبابي (Glassmorphism) */
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* أقسام */
+    .login-section, .info-section {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 300px;
+    }
+
+    .login-section { background: rgba(255,255,255,0.02); }
+    .info-section {
+      background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(168,85,247,0.06));
+      justify-content: flex-end;
+      position: relative;
+      border-right: 1px solid var(--border-color);
+    }
+    /* عكس الحدود والترتيب لليمين-لليسار (LTR) */
+    html[dir="ltr"] .info-section { border-right: none; border-left: 1px solid var(--border-color); }
+
+    .brand-name {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      /* تدرج نصي */
+      background: linear-gradient(to right, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .welcome-text { color: var(--muted-text); margin-bottom: 30px; font-size: .95rem; }
+
+    /* input group */
+    .input-group { margin-bottom: 18px; position: relative; }
+    .input-group input {
+      width: 100%;
+      padding: 14px 20px;
+      background: rgba(15,23,42,0.6);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      font-size: 1rem;
+      outline: none;
+    }
+    /* أيقونات داخل الحقول */
+    .input-group i { position: absolute; top: 50%; transform: translateY(-50%); color: var(--muted-text); pointer-events: none; }
+
+    /* وضع الأيقونات والزر toggle اعتماداً على الاتجاه (RTL) */
+    html[dir="rtl"] .input-group input { padding-right: 46px; padding-left: 20px; }
+    html[dir="rtl"] .input-group i { right: 15px; left: auto; }
+    html[dir="rtl"] .pass-toggle { right: 46px; left: auto; }
+
+    /* وضع الأيقونات والزر toggle اعتماداً على الاتجاه (LTR) */
+    html[dir="ltr"] .input-group input { padding-left: 46px; padding-right: 20px; }
+    html[dir="ltr"] .input-group i { left: 15px; right: auto; }
+    html[dir="ltr"] .pass-toggle { left: 46px; right: auto; }
+
+    .input-group input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+
+    /* زر إظهار/إخفاء كلمة المرور */
+    .pass-toggle {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--muted-text);
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+    }
+    .pass-toggle:focus { outline: 2px solid rgba(99,102,241,0.2); }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(99,102,241,0.4); }
+
+    .divider { margin: 22px 0; text-align: center; position: relative; }
+    .divider::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: var(--border-color); z-index: 1; }
+    .divider span { position: relative; z-index: 2; background: #151e32; padding: 0 10px; color: var(--muted-text); font-size: .85rem; }
+
+    /* language dropdown */
+    .language-dropdown { position: absolute; top: 25px; z-index: 10; }
+    html[dir="rtl"] .language-dropdown { left: 25px; }
+    html[dir="ltr"] .language-dropdown { right: 25px; }
+
+    .lang-btn {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .95rem;
+    }
+    .lang-btn:focus { outline: 2px solid rgba(99,102,241,0.16); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px;
+      width: 180px;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .lang-menu.show { display: block; }
+    html[dir="rtl"] .lang-menu { left: 0; }
+    html[dir="ltr"] .lang-menu { right: 0; }
+
+    .lang-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      color: var(--text-color);
+      border-radius: 8px;
+      font-size: .95rem;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: start;
+      cursor: pointer;
+    }
+    .lang-item:hover, .lang-item:focus { background: rgba(255,255,255,0.04); outline: none; }
+
+    .features-title { color: white; font-size: 1.2rem; margin-bottom: 18px; font-weight: 700; border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 5px; }
+    .features-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
+    .features-list li { color: #e2e8f0; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; font-size: .95rem; }
+    .features-list li i { color: #4ade80; background: rgba(74,222,128,0.08); padding: 8px; border-radius: 50%; min-width: 32px; text-align: center; }
+
+    /* حالة الرسائل */
+    #statusMsg { margin-top: 10px; font-size: .92rem; color: #e2e8f0; min-height: 1.2em; }
+
+    /* احترام reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .shape { animation: none !important; }
+      * { transition: none !important; }
+    }
+
+    /* responsiveness (tablet and mobile) */
+    @media (max-width: 768px) {
+      .container { flex-direction: column-reverse; height: auto; width: 92%; }
+      .info-section { padding: 26px; min-height: 260px; border-right: none; border-top: 1px solid var(--border-color); }
+      html[dir="ltr"] .container { flex-direction: column-reverse; }
+      .background-shapes .shape { filter: blur(36px); opacity: .35; }
+    }
+
+    /* تحسين العرض واللمس على شاشات أصغر */
+    @media (max-width: 480px) {
+      .container {
+        width: 98%;
+        border-radius: 16px;
+        padding: 12px;
+      }
+
+      .login-section, .info-section {
+        padding: 18px;
+      }
+
+      .brand-name { font-size: 1.6rem; }
+      .welcome-text { font-size: 1rem; }
+
+      .input-group input {
+        padding: 16px 18px;
+        font-size: 1.05rem;
+      }
+
+      .pass-toggle { padding: 8px; }
+
+      .login-btn {
+        padding: 14px;
+        font-size: 1.05rem;
+        border-radius: 10px;
+      }
+
+      .lang-btn { padding: 8px 10px; font-size: .95rem; }
+
+      .features-title { font-size: 1.05rem; }
+      .features-list li { font-size: 1rem; gap: 10px; }
+
+      /* إخفاء الخلفيات المتحركة لتحسين الأداء على الهواتف */
+      .background-shapes { display: none; }
+      .container { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+      /* زيادة المسافة بين عناصر اللمس */
+      .lang-item, .login-btn, .pass-toggle {
+        min-height: 44px;
+      }
+    }
+
+    /* نصوص مخفية لقراء الشاشة */
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-shapes" aria-hidden="true">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+  </div>
+
+  <div class="container" role="main">
+    <section class="login-section" aria-labelledby="brandTitle">
+      <div id="brandTitle" class="brand-name">Jonior_1230</div>
+      <p id="welcomeText" class="welcome-text">مرحباً بعودتك! الرجاء إدخال بياناتك</p>
+
+      <form id="loginForm" novalidate>
+        <div class="input-group">
+          <label for="emailInput" class="visually-hidden">البريد الإلكتروني</label>
+          <input type="email" id="emailInput" name="email" autocomplete="email" placeholder="البريد الإلكتروني" required aria-describedby="statusMsg">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+        </div>
+
+        <div class="input-group">
+          <label for="passInput" class="visually-hidden">كلمة المرور</label>
+          <input type="password" id="passInput" name="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+          <i class="fas fa-lock" aria-hidden="true"></i>
+          <button type="button" class="pass-toggle" id="passToggle" aria-pressed="false" aria-label="عرض كلمة المرور">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:.9rem;color:var(--muted-text);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="rememberCheckbox" name="remember">
+            <label for="rememberCheckbox" id="rememberMe">تذكرني</label>
+          </div>
+          <a href="#" id="forgotPass" style="color:var(--primary-color);text-decoration:none;">نسيت كلمة المرور؟</a>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">تسجيل الدخول</button>
+
+        <div id="statusMsg" role="status" aria-live="polite"></div>
+      </form>
+
+      <div class="divider"><span id="orText">أو</span></div>
+
+      <div style="text-align:center;font-size:.95rem;color:var(--muted-text);">
+        <span id="noAccount">ليس لديك حساب؟</span>
+        <a href="#" id="createAccount" style="color:var(--secondary-color);font-weight:700;text-decoration:none;">انشئ حساباً الآن</a>
+      </div>
+    </section>
+
+    <aside class="info-section" aria-labelledby="featuresLabel">
+      <div class="language-dropdown">
+        <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-globe" aria-hidden="true"></i>
+          <span id="currentLang">اللغة</span>
+        </button>
+
+        <div class="lang-menu" id="langMenu" role="menu" aria-label="قائمة اللغات">
+          <button class="lang-item" data-lang="ar" role="menuitem">🇮🇶 &nbsp; العربية</button>
+          <button class="lang-item" data-lang="en" role="menuitem">🇺🇸 &nbsp; English</button>
+          <button class="lang-item" data-lang="es" role="menuitem">🇪🇸 &nbsp; Español</button>
+          <button class="lang-item" data-lang="fr" role="menuitem">🇫🇷 &nbsp; Français</button>
+          <button class="lang-item" data-lang="de" role="menuitem">🇩🇪 &nbsp; Deutsch</button>
+          <button class="lang-item" data-lang="ru" role="menuitem">🇷🇺 &nbsp; Русский</button>
+          <button class="lang-item" data-lang="ja" role="menuitem">🇯🇵 &nbsp; 日本語</button>
+          <button class="lang-item" data-lang="zh" role="menuitem">🇨🇳 &nbsp; 中文</button>
+        </div>
+      </div>
+
+      <div class="features-container" style="margin-top: 40px;">
+        <div id="featuresLabel" class="features-title">ما نقدمه لك:</div>
+        <ul class="features-list">
+          <li><i class="fas fa-robot" aria-hidden="true"></i><span id="feat1">توليد صور وفيديوهات احترافي بالذكاء الاصطناعي.</span></li>
+          <li><i class="fas fa-project-diagram" aria-hidden="true"></i><span id="feat2">مكتبة كاملة لتصميم مخططات الكود (Chef AI).</span></li>
+          <li><i class="fas fa-brain" aria-hidden="true"></i><span id="feat3">إمكانية تدريب النماذج المخصصة الخاصة بك.</span></li>
+          <li><i class="fas fa-shield-alt" aria-hidden="true"></i><span id="feat4">أمان وحماية للبيانات على مستوى المؤسسات.</span></li>
+          <li><i class="fas fa-layer-group" aria-hidden="true"></i><span id="feat5">مساحة عمل موحدة للإبداع والإنتاجية.</span></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------
+    // رابط API لتسجيل الدخول
+    // **هام: استبدل هذا الرابط بالرابط الفعلي للخادم الخلفي الخاص بك.**
+    // -------------------------------------------------------------------
+    const API_URL = 'https://[ضع_هنا_رابط_API_الخلفي_الفعلي_لخادمك]/auth/login'; 
+
+    // قاموس الترجمة لجميع اللغات الثمانية
+    const translations = {
+      ar: {
+        welcome: "مرحباً بعودتك! الرجاء إدخال بياناتك",
+        emailPlaceholder: "البريد الإلكتروني",
+        passPlaceholder: "كلمة المرور",
+        remember: "تذكرني",
+        forgot: "نسيت كلمة المرور؟",
+        login: "تسجيل الدخول",
+        or: "أو",
+        noAccount: "ليس لديك حساب؟",
+        create: "انشئ حساباً الآن",
+        langBtn: "العربية",
+        featTitle: "ما نقدمه لك:",
+        f1: "توليد صور وفيديوهات احترافي بالذكاء الاصطناعي.",
+        f2: "مكتبة كاملة لتصميم مخططات الكود (Chef AI).",
+        f3: "إمكانية تدريب النماذج المخصصة الخاصة بك.",
+        f4: "أمان وحماية للبيانات على مستوى المؤسسات.",
+        f5: "مساحة عمل موحدة للإبداع والإنتاجية.",
+        loginLoading: "جاري تسجيل الدخول...",
+        loginSuccess: "تم تسجيل الدخول بنجاح!",
+        loginFailed: "فشل تسجيل الدخول",
+        loginInvalid: "يرجى إكمال الحقول بشكل صحيح."
+      },
+      en: {
+        welcome: "Welcome back! Please enter your details",
+        emailPlaceholder: "Email Address",
+        passPlaceholder: "Password",
+        remember: "Remember me",
+        forgot: "Forgot Password?",
+        login: "Sign In",
+        or: "OR",
+        noAccount: "Don't have an account?",
+        create: "Sign up now",
+        langBtn: "English",
+        featTitle: "What we offer:",
+        f1: "Professional AI image & video generation.",
+        f2: "Complete library for code diagrams (Chef AI).",
+        f3: "Ability to train your own custom models.",
+        f4: "Enterprise-grade data security & protection.",
+        f5: "Unified workspace for creativity & productivity.",
+        loginLoading: "Signing in...",
+        loginSuccess: "Signed in successfully!",
+        loginFailed: "Sign in failed",
+        loginInvalid: "Please complete the fields correctly."
+      },
+      es: {
+        welcome: "¡Bienvenido! Por favor ingrese sus datos",
+        emailPlaceholder: "Correo Electrónico",
+        passPlaceholder: "Contraseña",
+        remember: "Recuérdame",
+        forgot: "¿Olvidaste tu contraseña?",
+        login: "Iniciar Sesión",
+        or: "O",
+        noAccount: "¿No tienes cuenta?",
+        create: "Regístrate ahora",
+        langBtn: "Español",
+        featTitle: "Lo que ofrecemos:",
+        f1: "Generación profesional de imágenes y video con IA.",
+        f2: "Biblioteca completa para diagramas de código.",
+        f3: "Capacidad para entrenar tus propios modelos.",
+        f4: "Seguridad y protección de datos empresarial.",
+        f5: "Espacio de trabajo unificado para la productividad.",
+        loginLoading: "Iniciando sesión...",
+        loginSuccess: "¡Sesión iniciada con éxito!",
+        loginFailed: "Fallo al iniciar sesión",
+        loginInvalid: "Por favor, complete los campos correctamente."
+      },
+      fr: {
+        welcome: "Bienvenue! Veuillez entrer vos coordonnées",
+        emailPlaceholder: "Adresse e-mail",
+        passPlaceholder: "Mot de passe",
+        remember: "Se souvenir de moi",
+        forgot: "Mot de passe oublié?",
+        login: "Se connecter",
+        or: "OU",
+        noAccount: "Vous n'avez pas de compte?",
+        create: "Inscrivez-vous maintenant",
+        langBtn: "Français",
+        featTitle: "Ce que nous offrons:",
+        f1: "Génération professionnelle d'images et de vidéos par IA.",
+        f2: "Bibliothèque complète pour les diagrammes de code.",
+        f3: "Possibilité d'entraîner vos propres modèles.",
+        f4: "Sécurité et protection des données de niveau entreprise.",
+        f5: "Espace de travail unifié pour la productivité.",
+        loginLoading: "Connexion en cours...",
+        loginSuccess: "Connexion réussie!",
+        loginFailed: "Échec de la connexion",
+        loginInvalid: "Veuillez remplir correctement les champs."
+    },
+    de: {
+        welcome: "Willkommen zurück! Bitte geben Sie Ihre Daten ein",
+        emailPlaceholder: "E-Mail-Adresse",
+        passPlaceholder: "Passwort",
+        remember: "Angemeldet bleiben",
+        forgot: "Passwort vergessen?",
+        login: "Anmelden",
+        or: "ODER",
+        noAccount: "Sie haben kein Konto?",
+        create: "Jetzt registrieren",
+        langBtn: "Deutsch",
+        featTitle: "Was wir bieten:",
+        f1: "Professionelle KI-Bild- und Videogenerierung.",
+        f2: "Vollständige Bibliothek für Code-Diagramme.",
+        f3: "Möglichkeit, eigene benutzerdefinierte Modelle zu trainieren.",
+        f4: "Datensicherheit und Schutz auf Unternehmensebene.",
+        f5: "Einheitlicher Arbeitsbereich für Produktivität.",
+        loginLoading: "Anmeldung läuft...",
+        loginSuccess: "Erfolgreich angemeldet!",
+        loginFailed: "Anmeldung fehlgeschlagen",
+        loginInvalid: "Bitte füllen Sie die Felder korrekt aus."
+    },
+    ru: {
+        welcome: "С возвращением! Пожалуйста, введите ваши данные",
+        emailPlaceholder: "Адрес электронной почты",
+        passPlaceholder: "Пароль",
+        remember: "Запомнить меня",
+        forgot: "Забыли пароль?",
+        login: "Войти",
+        or: "ИЛИ",
+        noAccount: "Нет аккаунта?",
+        create: "Зарегистрироваться сейчас",
+        langBtn: "Русский",
+        featTitle: "Что мы предлагаем:",
+        f1: "Профессиональная генерация изображений и видео ИИ.",
+        f2: "Полная библиотека для кодовых диаграмм.",
+        f3: "Возможность обучения ваших собственных моделей.",
+        f4: "Корпоративная безопасность и защита данных.",
+        f5: "Единое рабочее пространство для продуктивности.",
+        loginLoading: "Вход в систему...",
+        loginSuccess: "Успешный вход!",
+        loginFailed: "Сбой входа в систему",
+        loginInvalid: "Пожалуйста, заполните поля правильно."
+    },
+    ja: {
+        welcome: "おかえりなさい！詳細を入力してください",
+        emailPlaceholder: "メールアドレス",
+        passPlaceholder: "パスワード",
+        remember: "ログイン状態を保持",
+        forgot: "パスワードをお忘れですか？",
+        login: "サインイン",
+        or: "または",
+        noAccount: "アカウントをお持ちではありませんか？",
+        create: "今すぐ登録",
+        langBtn: "日本語",
+        featTitle: "提供するもの:",
+        f1: "プロフェッショナルなAI画像・動画生成。",
+        f2: "コード図用の完全なライブラリ。",
+        f3: "独自のカスタムモデルをトレーニングする機能。",
+        f4: "エンタープライズレベルのデータセキュリティと保護。",
+        f5: "創造性と生産性のための統合されたワークスペース。",
+        loginLoading: "サインイン中...",
+        loginSuccess: "サインインに成功しました！",
+        loginFailed: "サインインに失敗しました",
+        loginInvalid: "フィールドを正しく入力してください。"
+    },
+    zh: {
+        welcome: "欢迎回来！请输入您的详细信息",
+        emailPlaceholder: "电子邮件地址",
+        passPlaceholder: "密码",
+        remember: "记住我",
+        forgot: "忘记密码？",
+        login: "登录",
+        or: "或",
+        noAccount: "没有账号？",
+        create: "立即注册",
+        langBtn: "中文",
+        featTitle: "我们提供什么：",
+        f1: "专业的AI图像和视频生成。",
+        f2: "完整的代码图库。",
+        f3: "能够训练您自己的自定义模型。",
+        f4: "企业级数据安全和保护。",
+        f5: "统一的工作空间，提高生产力。",
+        loginLoading: "正在登录...",
+        loginSuccess: "登录成功！",
+        loginFailed: "登录失败",
+        loginInvalid: "请正确填写字段。"
+    }
+    };
+
+    // عناصر DOM الأساسية
+    const langBtn = document.getElementById('langBtn');
+    const langMenu = document.getElementById('langMenu');
+    const langItems = Array.from(document.querySelectorAll('.lang-item'));
+    const statusMsg = document.getElementById('statusMsg');
+    const loginForm = document.getElementById('loginForm');
+    const passToggle = document.getElementById('passToggle');
+
+    // تعيين اللغة وتحديث الواجهة
+    function setLanguage(lang, save = true) {
+      const t = translations[lang] || translations['en'];
+
+      // تعيين اتجاه الصفحة وسم اللغة
+      if (lang === 'ar') {
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.documentElement.setAttribute('lang', 'ar');
+        passToggle.setAttribute('aria-label', document.getElementById('passInput').type === 'password' ? 'عرض كلمة المرور' : 'اخفاء كلمة المرور');
+      } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', lang);
+        passToggle.setAttribute('aria-label', document.getElementById('passInput').type === 'password' ? 'Show password' : 'Hide password');
+      }
+
+      // تحديث النصوص
+      document.getElementById('welcomeText').innerText = t.welcome;
+      document.getElementById('emailInput').placeholder = t.emailPlaceholder;
+      document.getElementById('passInput').placeholder = t.passPlaceholder;
+      document.getElementById('rememberMe').innerText = t.remember;
+      document.getElementById('forgotPass').innerText = t.forgot;
+      document.getElementById('loginBtn').innerText = t.login;
+      document.getElementById('orText').innerText = t.or;
+      document.getElementById('noAccount').innerText = t.noAccount;
+      document.getElementById('createAccount').innerText = t.create;
+      document.getElementById('currentLang').innerText = t.langBtn;
+      document.getElementById('featuresLabel').innerText = t.featTitle;
+
+      document.getElementById('feat1').innerText = t.f1;
+      document.getElementById('feat2').innerText = t.f2;
+      document.getElementById('feat3').innerText = t.f3;
+      document.getElementById('feat4').innerText = t.f4;
+      document.getElementById('feat5').innerText = t.f5;
+
+      // حفظ التفضيل محليًا
+      if (save) localStorage.setItem('siteLang', lang);
+    }
+
+    // تهيئة صفحة عند التحميل
+    document.addEventListener('DOMContentLoaded', () => {
+      // استعادة اللغة المحفوظة أو محاكاة لغة المتصفح
+      const savedLang = localStorage.getItem('siteLang') ||
+        (navigator.language && navigator.language.startsWith('ar') ? 'ar' : 'en');
+      setLanguage(savedLang, false);
+
+      // إعداد القائمة: الضغط على زر اللغة يفتح/يغلق القائمة
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = langBtn.getAttribute('aria-expanded') === 'true';
+        langBtn.setAttribute('aria-expanded', String(!expanded));
+        langMenu.classList.toggle('show');
+        if (!expanded) langMenu.querySelector('.lang-item')?.focus();
+      });
+
+      // اغلاق القائمة بالنقر خارجها
+      document.addEventListener('click', (e) => {
+        if (!langMenu.contains(e.target) && !langBtn.contains(e.target)) {
+          langMenu.classList.remove('show');
+          langBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // دعم لوحة المفاتيح: إغلاق بـ Escape
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') {
+          langMenu.classList.remove('show');
+          langBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // التعامل مع عناصر اللغة
+      langItems.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang') || 'en';
+          setLanguage(lang);
+          langMenu.classList.remove('show');
+          langBtn.setAttribute('aria-expanded', 'false');
+          langBtn.focus();
+        });
+      });
+
+      // زر إظهار/إخفاء كلمة المرور
+      passToggle.addEventListener('click', () => {
+        const pwd = document.getElementById('passInput');
+        const icon = passToggle.querySelector('i');
+        const isHidden = pwd.type === 'password';
+        const currentLang = document.documentElement.lang;
+
+        pwd.type = isHidden ? 'text' : 'password';
+        passToggle.setAttribute('aria-pressed', String(isHidden));
+
+        // تحديث التسمية حسب اللغة
+        const t = translations[currentLang] || translations['en'];
+        if (isHidden) {
+            passToggle.setAttribute('aria-label', (currentLang === 'ar') ? 'اخفاء كلمة المرور' : 'Hide password');
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passToggle.setAttribute('aria-label', (currentLang === 'ar') ? 'عرض كلمة المرور' : 'Show password');
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+      });
+
+      // معالجة إرسال النموذج (طلب HTTP حقيقي)
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentLang = document.documentElement.lang;
+        const t = translations[currentLang];
+
+        statusMsg.textContent = '';
+        
+        if (!loginForm.checkValidity()) {
+          loginForm.reportValidity();
+          statusMsg.textContent = t.loginInvalid;
+          return;
+        }
+
+        const formData = new FormData(loginForm);
+        const email = String(formData.get('email') || '').trim();
+        const password = String(formData.get('password') || '');
+
+        // حالة تحميل
+        statusMsg.textContent = t.loginLoading;
+
+        try {
+            // الطلب الحقيقي باستخدام Fetch API
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': currentLang
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            // التحقق من حالة استجابة HTTP
+            if (!response.ok) {
+                // قراءة رسالة الخطأ من الخادم
+                const errorData = await response.json();
+                const errorMessage = errorData.message || t.loginFailed;
+                throw new Error(errorMessage);
+            }
+
+            // استجابة ناجحة
+            const data = await response.json();
+            
+            // **هام:** معالجة التوكن (Token) أو إعادة التوجيه
+            // localStorage.setItem('authToken', data.token);
+
+            statusMsg.textContent = t.loginSuccess;
+            // window.location.href = '/dashboard';
+
+        } catch (err) {
+            // عرض رسالة الخطأ
+            statusMsg.textContent = `${t.loginFailed}: ${err.message}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+   body.setAttributectedLangipt = document.getElementById('tojim-body');
+        const langSelector = document.getElementById('language-selector');
+
+        // Dark Mode Logic (Kept for continuity)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            body.classList.add('dark-mode');
+        }
+
+        // Language Switcher Logic
+        langSelector.addEventListener('change', (event) => {
+            const selectedLang = event.target.value;
+            body.setAttribute('lang', selectedLang);
+            
+            // Toggle direction based on language
+            if (selectedLang === 'ar') {
+                body.setAttribute('dir', 'rtl');
+
+            }
+            // In a real app, this would also change all the text content
+            console.log('Language switched to: ' + selectedLang);
+        });
+    </script>
+</body>
+</html>
